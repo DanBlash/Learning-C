@@ -1,2 +1,2 @@
 # Learning-C
-Small projects to learn the C programming language
+Projects I have made on my linux VM and transfered over using SFTP. Work in Progess
