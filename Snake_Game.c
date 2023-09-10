@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <ncurses.h>
+#include <curses.h>
 #include <string.h>
 #include <unistd.h>
 //#include <graphics.h>
@@ -33,9 +33,8 @@ void setup() {
    score = 0;      
 }
 
-
 void draw() {
-
+   
    system("clear");
     for (i = 0; i < height; i++) {
       for (j = 0; j <width; j++) {
@@ -52,17 +51,25 @@ void draw() {
             printf(" ");
          } 
          } 
-         }printf("\n");
+         }printf("\n"); 
       }
-      //system("clear");
-   printf("        GAME OVER.\n      Your score is %d.", score);
-   printf("\nPress ENTER to quit the game.");
+      printf("Press X to quit the game.\n");
    }
 
- void input() {
+void input() {
+   int move;
+   
    initscr();
-   if (getch()) {
-      switch (getch()) {
+   clear();
+   noecho();
+   cbreak();
+   
+   move = getch();
+
+      switch (move) {
+      case 'a': 
+         flag = 1;
+         break;
       case 's':
          flag = 2;
          break;
@@ -76,13 +83,66 @@ void draw() {
           gameover = 1;
           break;
        }
+
+       endwin();
     }
-  }
+
+void logic() {
+   sleep(0.01);
+   switch (flag) {
+   case 1:
+      y--;
+      break;
+   case 2:
+      x++;
+      break;
+   case 3:
+      y++;
+      break;
+   case 4:
+      x--;
+      break;
+   default:
+      break;
+   }
+
+   if (x < 0 || x > height || y < 0 || y > width) {
+      gameover = 1;
+   }
+
+   if (x == fruitx && y == fruity) {
+      label3:
+         fruitx = rand() % 20;
+         if (fruitx == 0)
+            goto label3;
+
+      label4:
+         fruity = rand() % 20;
+         if(fruity == 0)
+            goto label4;
+         score += 10;
+   }
+}
+
+
 
 int main() {
 
+
 setup();
-draw();
-//input();
+
+while (!gameover) {
+   draw();
+   input();
+   logic();
+   
+   
+
+if (gameover != 0) {
+          system("clear");
+   printf("   GAME OVER.");
+   printf("\nYour score is %d.", score);
+      }
+}
 
 }
