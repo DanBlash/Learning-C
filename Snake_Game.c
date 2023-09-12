@@ -7,7 +7,7 @@
 // *Followed tutorial from : https://www.geeksforgeeks.org/snake-game-in-c/
 
  int height = 24;
- int width = 80;
+ int width = 78;
  int gameover;
  int score;
  int snake_x;
@@ -18,17 +18,17 @@
  int start_y = 0;
  int start_x = 0;
  int startgame;
-   
+ WINDOW *win;  
 
 void setup() {
    gameover = 0;
-   snake_x = height/2;
-   snake_y = width/2;
+   snake_x = width / 2;
+   snake_y = height / 2;
    if (fruitx == 0) {
-      fruitx=rand() % 20;
+      fruitx=rand() % 78;
    }
    if (fruity==0) {
-      fruity=rand() % 20;
+      fruity=rand() % 24;
    }
 
    score = 0;      
@@ -38,45 +38,25 @@ void draw() {
    
    clear();
    
-   WINDOW * win = newwin(height, width, start_y, start_x);
+   win = newwin(height, width, start_y, start_x);
    refresh();
 
    box(win, 0, 0);
+   mvwprintw(win, 23, 29, "Press X to Quit Game");
+   refresh();
    mvwprintw(win, fruity, fruitx, "*");
-   wrefresh(win);
+   refresh();
    mvwprintw(win, snake_y, snake_x, "o");
    wrefresh(win);
+   
 
-   //Bug on printing box that caused cursor to print after line finished even with new line print***
-
-   //system("clear");
-   //  for (int i = 0; i < height; i++) {
-   //    for (int j = 0; j <width; j++) {
-   //       if (i == 0 || i == width - 1) {
-   //          printf("-");
-   //       } else if (j == 0 || j == height - 1) {
-   //          printf("|");
-   //       } else {
-   //          if (i == x && j == y) {
-   //             printf("o");
-   //          } else if (i == fruitx && j == fruity) {
-   //             printf("*");
-   //          } else {
-   //          printf(" ");
-   //          } 
-   //       } 
-   //       }
-   //       printf("\n");
-   //       fflush(stdout);
-   //    }
-   //    printf("Press X to quit the game.\n");
     }
 
 int input_delay() {
    int kbhit;
 
    kbhit = getch();
-   timeout(1000);
+   timeout(500);
 
    return kbhit;
 }
@@ -110,44 +90,41 @@ void logic() {
    sleep(0.01);
    switch (direction) {
    case 1:
-      //y--;
-      snake_y--;
+      snake_x--;
       break;
    case 2:
-      //x++;
-      snake_x++;
-      break;
-   case 3:
-      //y++;
       snake_y++;
       break;
+   case 3:
+      snake_x++;
+      break;
    case 4:
-      //x--;
-      snake_x--;
+      snake_y--;
       break;
    default:
       break;
    }
 
-   if (snake_x < 0 || snake_x > height || snake_y < 0 || snake_y > width) {
+   if (snake_x < 0 || snake_x > width || snake_y < 0 || snake_y > height) {
       gameover = 1;
    }
 
-//    if (x == fruitx && y == fruity) {
-//       label3:
-//          fruitx = rand() % 20;
-//          if (fruitx == 0)
-//             goto label3;
+   if (snake_x == fruitx && snake_y == fruity) {
+      label1:
+         fruitx = rand() % 78;
+         if (fruitx == 0)
+            goto label1;
 
-//       label4:
-//          fruity = rand() % 20;
-//          if(fruity == 0)
-//             goto label4;
-//          score += 10;
-//    }
+      label2:
+         fruity = rand() % 24;
+         if(fruity == 0)
+            goto label2;
+         score += 10;
+   }
  }
 
  void end_game_msg() {
+   clear();
    move(10, 30);
    printw("   GAME OVER.\n");
    move(11, 30);
@@ -159,7 +136,6 @@ void logic() {
 
 int main() {
   
-   //printf("Press ENTER to start");
    setup();
    initscr();
    mvaddstr(10, 30, "Press ENTER to start");
@@ -170,7 +146,6 @@ int main() {
    
    while (!gameover) {
       draw();
-      //input_delay();
       input(input_delay());
       logic();
       
@@ -179,14 +154,10 @@ int main() {
       if (gameover != 0) {
          refresh();
          end_game_msg();
+         delwin(win);
          endwin();
-         delwin(stdscr); 
-         
-         
-         //system("clear"); 
-        
-         //printf("   GAME OVER.");
-         //printf("\nYour score is %d.\n\n", score);
+          
+      
       }
    }
 }
