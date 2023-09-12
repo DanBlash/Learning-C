@@ -49,7 +49,6 @@ void draw() {
    mvwprintw(win, snake_y, snake_x, "o");
    wrefresh(win);
    
-
     }
 
 int input_delay() {
@@ -105,7 +104,7 @@ void logic() {
       break;
    }
 
-   if (snake_x < 0 || snake_x > width || snake_y < 0 || snake_y > height) {
+   if (snake_x < 0 || snake_x > width - 1 || snake_y < 0 || snake_y > height - 1) {
       gameover = 1;
    }
 
@@ -138,6 +137,7 @@ int main() {
   
    setup();
    initscr();
+   curs_set(0);
    mvaddstr(10, 30, "Press ENTER to start");
    noecho();
    cbreak();
@@ -157,7 +157,6 @@ int main() {
          delwin(win);
          endwin();
           
-      
       }
    }
 }
